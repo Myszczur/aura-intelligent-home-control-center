@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import SideBar from "./components/SideBar.jsx";
+import ThermostatWidget from "./components/ThermostatWidget";
+import QuickActionsWidget from "./components/QuickActionsWidget";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main className="bg-gradient-to-br from-[#1a1a1a] to-[#111111] min-h-screen text-gray-200 flex">
+      <SideBar />
+
+      {/* Główny kontener na widgety */}
+      <div className="flex-1 p-8">
+        <h1 className="text-4xl font-bold text-white mb-8">
+          AURA Control Center
+        </h1>
+
+        {/* Siatka na widgety */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ThermostatWidget />
+          <QuickActionsWidget />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </main>
+  );
 }
 
-export default App
+export default App;
