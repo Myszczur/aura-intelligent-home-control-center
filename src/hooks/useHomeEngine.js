@@ -176,12 +176,37 @@ export const useHomeEngine = () => {
     });
   }, []);
 
+  const addNotification = useCallback((message, type = "info") => {
+    const newNotification = {
+      id: uuidv4(),
+      message,
+      type,
+    };
+
+    setHomeState((prevState) => ({
+      ...prevState,
+      notifications: [...prevState.notifications, newNotification],
+    }));
+
+    setTimeout(() => {
+      removeNotification(newNotification.id);
+    }, 5000);
+  }, []);
+
+  const removeNotification = useCallback((id) => {
+    setHomeState((prev) => ({
+      ...prev,
+      notifications: prev.notifications.filter((n) => n.id !== id),
+    }));
+  }, []);
+  
   const setScene = useCallback(
     (sceneName) => {
-      setHomeState((prevState) => {
-        let newState = { ...prevState };
+      setHomeState((prev) => {
+        let newState = { ...prev };
 
         if (sceneName === "movieNight") {
+          // Przyciemnij światła w salonie i kuchni, wyłącz w biurze
           newState.lighting.livingRoom = {
             ...newState.lighting.livingRoom,
             isOn: true,
@@ -197,28 +222,32 @@ export const useHomeEngine = () => {
             isOn: false,
           };
 
+          // Ustaw komfortową temperaturę do oglądania
           newState.thermostat.target = 21;
         }
 
         if (sceneName === "goodbye") {
+          // Wyłącz wszystkie światła
           Object.keys(newState.lighting).forEach((lightId) => {
             newState.lighting[lightId].isOn = false;
           });
+
+          // Ustaw alarm
           newState.security.status = "armed_away";
+        }
+
+        if (sceneName === "movieNight") {
+          addNotification('Scena "Wieczór Filmowy" aktywna.', "info");
+        }
+        if (sceneName === "goodbye") {
+          addNotification(
+            "See you! The “Exit” scene has been activated.",
+            "info"
+          );
         }
 
         return newState;
       });
-
-      if (sceneName === "movieNight") {
-        addNotification("“Movie Night” scene active. ✅", "info");
-      }
-      if (sceneName === "goodbye") {
-        addNotification(
-          "See you! The “Exit” scene has been activated. ✅",
-          "info"
-        );
-      }
     },
     [addNotification]
   );
@@ -238,11 +267,13 @@ export const useHomeEngine = () => {
 
   const setSecurityStatus = useCallback(
     (status) => {
-      if (status === "armed_away" || status === "armed_home") {
-        addNotification("Security system armed ✅.", "success");
-      } else if (status === "disarmed") {
-        addNotification("System disarmed ✅", "info");
-      }
+      const statusMap = {
+        armed_away: "Uzbrojony (wyjście)",
+        armed_home: "Uzbrojony (w domu)",
+        disarmed: "Rozbrojony",
+      };
+      // logSecurityEvent(`System przełączony w tryb: ${statusMap[status]}`);
+      addNotification(`System bezpieczeństwa ${statusMap[status]}.`, "success");
 
       setHomeState((prev) => ({
         ...prev,
@@ -251,32 +282,6 @@ export const useHomeEngine = () => {
     },
     [addNotification]
   );
-
-  const addNotification = useCallback((message, type = "info") => {
-    const newNotification = {
-      id: uuidv4(),
-      message,
-      type,
-    };
-
-    setHomeState((prevState) => ({
-      ...prevState,
-      notifications: [...prevState.notifications, newNotification],
-    }));
-
-    setTimeout(() => {
-      removeNotification(newNotification.id);
-    }, 5000);
-  }, []);
-
-  const removeNotification = useCallback((notificationId) => {
-    setHomeState((prevState) => ({
-      ...prevState,
-      notifications: prevState.notifications.filter(
-        (notyfication) => notyfication.id != notificationId
-      ),
-    }));
-  }, []);
 
   return {
     homeState,

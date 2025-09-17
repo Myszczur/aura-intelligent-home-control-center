@@ -21,7 +21,7 @@ const statusConfig = {
   },
 };
 
-export const SecurityWidget = () => {
+const SecurityWidget = () => {
   const { homeState, setSecurityStatus } = useHome();
   const { status, sensors } = homeState.security;
 
@@ -122,3 +122,5 @@ const SensorItem = ({ sensor }) => {
     </div>
   );
 };
+
+export default SecurityWidget;
