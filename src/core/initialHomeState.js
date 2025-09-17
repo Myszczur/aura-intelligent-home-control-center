@@ -1,66 +1,97 @@
 export const initialHomeState = {
-  // termostat i temeratura
+  notifications: [],
   thermostat: {
-    temperature: 21.5, // aktualna temperatura
-    target: 23, // docelowa temperatura ustawiona przez użytkownika
+    temperature: 12.5,
+    target: 22,
     unit: "°C",
     status: "heating",
   },
-
-  // oświetlenie
   lighting: {
     livingRoom: {
       id: "livingRoom",
       name: "Salon",
       isOn: true,
       brightness: 80,
-    },
+      color: "hsl(40, 100%, 75%)",
+    }, // ciepły biały
     kitchen: {
       id: "kitchen",
       name: "Kuchnia",
       isOn: true,
       brightness: 65,
-    },
+      color: "hsl(200, 100%, 85%)",
+    }, // chłodny biały
     bedroom: {
       id: "bedroom",
       name: "Sypialnia",
       isOn: false,
       brightness: 100,
-    },
+      color: "hsl(300, 80%, 70%)",
+    }, // fioletowy
     office: {
       id: "office",
       name: "Biuro",
       isOn: true,
       brightness: 90,
-    },
+      color: "hsl(180, 70%, 80%)",
+    }, // turkusowy
   },
-
-  // zużycie energii
   energy: {
     usageNow: 1.2,
     usageToday: 8.4,
-    unit: "kw",
+    unit: "kWh", // Zmieniamy na kWh, bo mówimy o zużyciu, nie mocy chwilowej
+    history: [], // Ta historia jest teraz mniej ważna
+    // NOWE DANE HISTORYCZNE
+    // dailyHistory: generateHistoricalData(24, "hours", 0.5, 0.3),
+    // weeklyHistory: generateHistoricalData(7, "days", 12, 4),
+    // monthlyHistory: generateHistoricalData(30, "days", 12, 4),
   },
-
-  // systemy bezpieczeństwa
+  environment: {
+    location: "Warszawa, PL",
+    weather: {
+      condition: "sunny", // 'sunny', 'cloudy', 'rainy', 'stormy', 'snowy'
+      temperature: 19,
+      windSpeed: 15, // km/h
+      humidity: 65, // %
+      unit: "°C",
+    },
+    airQuality: {
+      index: 45, // Symulacja indeksu AQI
+      level: "Dobra", // 'Dobra', 'Umiarkowana', 'Zła'
+    },
+    sun: {
+      sunrise: "05:32",
+      sunset: "20:48",
+    },
+  },
   security: {
-    status: "disarmed",
+    status: "disarmed", // 'armed_away', 'armed_home', 'disarmed'
     sensors: [
       {
         id: "front_door",
         name: "Drzwi frontowe",
         isTriggered: false,
-      },
-      {
-        id: "back_door",
-        name: "Drzwi tylne",
-        isTriggered: false,
+        type: "door",
       },
       {
         id: "living_room_motion",
-        name: "Czujnik ruchu (Salon)",
+        name: "Ruch (Salon)",
         isTriggered: false,
+        type: "motion",
+      },
+      {
+        id: "cam_garage",
+        name: "Kamera (Garaż)",
+        isTriggered: false,
+        type: "camera",
+      },
+      {
+        id: "cam_garden",
+        name: "Kamera (Ogród)",
+        isTriggered: false,
+        type: "camera",
       },
     ],
+    eventLog: [],
   },
 };
