@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { initialHomeState } from "../core/initialHomeState";
 import { v4 as uuidv4 } from "uuid";
+import { color } from "motion";
 
 export const useHomeEngine = () => {
   const [homeState, setHomeState] = useState(initialHomeState);
@@ -199,7 +200,7 @@ export const useHomeEngine = () => {
       notifications: prev.notifications.filter((n) => n.id !== id),
     }));
   }, []);
-  
+
   const setScene = useCallback(
     (sceneName) => {
       setHomeState((prev) => {
@@ -283,6 +284,16 @@ export const useHomeEngine = () => {
     [addNotification]
   );
 
+  const setLightColor = useCallback((lightId, newColor) => {
+    setHomeState((prevState) => ({
+      ...prevState,
+      lighting: {
+        ...prevState.lighting,
+        [lightId]: { ...prevState.lighting[lightId], color: newColor },
+      },
+    }));
+  }, []);
+
   return {
     homeState,
     setTargetTemperature,
@@ -292,5 +303,6 @@ export const useHomeEngine = () => {
     setAllLights,
     setScene,
     removeNotification,
+    setLightColor,
   };
 };
