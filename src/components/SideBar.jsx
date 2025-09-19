@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Home, Lightbulb, Shield, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
-import React from "react";
 
 const menuItems = [
   { name: "Dashboard", icon: Home },
@@ -10,7 +10,7 @@ const menuItems = [
 ];
 
 export const SideBar = () => {
-  // Warianty animacji dla Framer Motion
+  // Warianty animacji dla Framer
   const sidebarVariants = {
     hidden: { x: "-100%", opacity: 0 },
     visible: {
@@ -35,7 +35,31 @@ export const SideBar = () => {
       variants={sidebarVariants}
       initial="hidden"
       animate="visible"
-    ></motion.div>
+    >
+      <div className="text-2xl font-bold text-white mb-10 flex items-center space-x-2 p-2">
+        <span className="w-8 h-8 bg-brand-purple rounded-full"></span>
+        <span>AURA</span>
+      </div>
+
+      <ul className="space-y-2">
+        {menuItems.map((item, index) => (
+          <motion.li key={item.name} variants={itemVariants}>
+            <a
+              href="#"
+              className={`flex items-center space-x-3 p-3 rounded-lg transition-colors
+              ${
+                index === 0
+                  ? "bg-white/10 text-whitte font-semibold"
+                  : "text-gray-400 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              <span>{item.name}</span>
+            </a>
+          </motion.li>
+        ))}
+      </ul>
+    </motion.div>
   );
 };
 

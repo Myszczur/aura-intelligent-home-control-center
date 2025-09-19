@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
 import { initialHomeState } from "../core/initialHomeState";
+import { v4 as uuidv4 } from "uuid";
 
 export const useHomeEngine = () => {
   const [homeState, setHomeState] = useState(initialHomeState);
@@ -9,6 +10,8 @@ export const useHomeEngine = () => {
   useEffect(() => {
     const symulationInterval = setInterval(() => {
       setHomeState((prevState) => {
+        let newState = { ...prevState };
+
         // termostat
         const tempDiff =
           prevState.thermostat.target - prevState.thermostat.temperature;
@@ -44,6 +47,10 @@ export const useHomeEngine = () => {
         const newEnergyUsageToday = parseFloat(
           (prevState.energy.usageToday + newEnergyUsageNow / 3600).toFixed(4)
         );
+        const newHistory = [...prevState.energy.history, newEnergyUsageNow];
+        if (newHistory.length > 30) {
+          newHistory.shift();
+        }
 
         // Losowe wyzwolenie czujnika ruchu co jakiś czas
         let newSensors = prevState.security.sensors;
@@ -62,6 +69,56 @@ export const useHomeEngine = () => {
           }));
         }
 
+        // --- Symulacja zmiany pogody co jakiś czas ---
+        if (Math.random() < 0.01) {
+          // 1% szansy
+          const conditions = ["sunny", "cloudy", "rainy", "stormy", "snowy"];
+          const newCondition =
+            conditions[Math.floor(Math.random() * conditions.length)];
+          newState.environment.weather.condition = newCondition;
+
+          if (newCondition === "sunny") {
+            newState.environment.weather = {
+              ...newState.environment.weather,
+              temperature: 24,
+              windSpeed: 10,
+              humidity: 50,
+            };
+          }
+          if (newCondition === "cloudy") {
+            newState.environment.weather = {
+              ...newState.environment.weather,
+              temperature: 18,
+              windSpeed: 15,
+              humidity: 65,
+            };
+          }
+          if (newCondition === "rainy") {
+            newState.environment.weather = {
+              ...newState.environment.weather,
+              temperature: 15,
+              windSpeed: 25,
+              humidity: 85,
+            };
+          }
+          if (newCondition === "stormy") {
+            newState.environment.weather = {
+              ...newState.environment.weather,
+              temperature: 16,
+              windSpeed: 45,
+              humidity: 90,
+            };
+          }
+          if (newCondition === "snowy") {
+            newState.environment.weather = {
+              ...newState.environment.weather,
+              temperature: -2,
+              windSpeed: 20,
+              humidity: 80,
+            };
+          }
+        }
+
         // Zwracamy zaktualizowany stan
         return {
           ...prevState,
@@ -74,11 +131,13 @@ export const useHomeEngine = () => {
             ...prevState.energy,
             usageNow: newEnergyUsageNow,
             usageToday: newEnergyUsageToday,
+            history: newHistory,
           },
           security: {
             ...prevState.security,
             sensors: newSensors,
           },
+          newState,
         };
       });
     }, 2000);
@@ -107,6 +166,63 @@ export const useHomeEngine = () => {
     }));
   }, []);
 
+  const setAllLights = useCallback((state) => {
+    setHomeState((prev) => {
+      const newLightingState = { ...prev.lighting };
+      Object.keys(newLightingState).forEach((lightId) => {
+        newLightingState[lightId].isOn = state;
+      });
+      return { ...prev, lighting: newLightingState };
+    });
+  }, []);
+
+  const setScene = useCallback(
+    (sceneName) => {
+      setHomeState((prevState) => {
+        let newState = { ...prevState };
+
+        if (sceneName === "movieNight") {
+          newState.lighting.livingRoom = {
+            ...newState.lighting.livingRoom,
+            isOn: true,
+            brightness: 30,
+          };
+          newState.lighting.kitchen = {
+            ...newState.lighting.kitchen,
+            isOn: true,
+            brightness: 20,
+          };
+          newState.lighting.office = {
+            ...newState.lighting.office,
+            isOn: false,
+          };
+
+          newState.thermostat.target = 21;
+        }
+
+        if (sceneName === "goodbye") {
+          Object.keys(newState.lighting).forEach((lightId) => {
+            newState.lighting[lightId].isOn = false;
+          });
+          newState.security.status = "armed_away";
+        }
+
+        return newState;
+      });
+
+      if (sceneName === "movieNight") {
+        addNotification("“Movie Night” scene active. ✅", "info");
+      }
+      if (sceneName === "goodbye") {
+        addNotification(
+          "See you! The “Exit” scene has been activated. ✅",
+          "info"
+        );
+      }
+    },
+    [addNotification]
+  );
+
   const setLightBrightness = useCallback((lightId, brightness) => {
     setHomeState((prevState) => ({
       ...prevState,
@@ -120,13 +236,45 @@ export const useHomeEngine = () => {
     }));
   }, []);
 
-  const setSecurityStatus = useCallback((securityStatus) => {
+  const setSecurityStatus = useCallback(
+    (status) => {
+      if (status === "armed_away" || status === "armed_home") {
+        addNotification("Security system armed ✅.", "success");
+      } else if (status === "disarmed") {
+        addNotification("System disarmed ✅", "info");
+      }
+
+      setHomeState((prev) => ({
+        ...prev,
+        security: { ...prev.security, status },
+      }));
+    },
+    [addNotification]
+  );
+
+  const addNotification = useCallback((message, type = "info") => {
+    const newNotification = {
+      id: uuidv4(),
+      message,
+      type,
+    };
+
     setHomeState((prevState) => ({
-      ...prevState.security,
-      security: {
-        ...prevState.security,
-        status: securityStatus,
-      },
+      ...prevState,
+      notifications: [...prevState.notifications, newNotification],
+    }));
+
+    setTimeout(() => {
+      removeNotification(newNotification.id);
+    }, 5000);
+  }, []);
+
+  const removeNotification = useCallback((notificationId) => {
+    setHomeState((prevState) => ({
+      ...prevState,
+      notifications: prevState.notifications.filter(
+        (notyfication) => notyfication.id != notificationId
+      ),
     }));
   }, []);
 
@@ -136,5 +284,8 @@ export const useHomeEngine = () => {
     setLightBrightness,
     setSecurityStatus,
     toggleLight,
+    setAllLights,
+    setScene,
+    removeNotification,
   };
-}
+};
