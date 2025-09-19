@@ -1,4 +1,3 @@
-import React from "react";
 import EnergyUsageWidget from "../components/EnergyUsageWidget";
 import ThermostatWidget from "../components/ThermostatWidget";
 import LightingWidget from "../components/LightingWidget";
@@ -12,7 +11,7 @@ function DashboardView() {
       <div className="md:col-span-2 lg:col-span-2">
         <EnvironmentWidget />
       </div>
-      <div className="md:col-span-1 lg:col-span-1 bg-gradient-to-br from-dark-card-start to-dark-card rounded-2xl shadow-tactile border border-white/5">
+      <div className="md:col-span-1 lg:col-span-1 bg-gradient-to-br from-[#2c2c2c] to-[#252525] rounded-2xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)\,_inset_0_1px_0_0_rgba(255,255,255,0.05)] border border-white/5">
         <QuickActionsWidget />
       </div>
       <div className="md:col-span-2 lg:col-span-2">

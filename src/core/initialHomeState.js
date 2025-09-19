@@ -1,3 +1,25 @@
+import { sub } from "date-fns";
+
+const generateHistoricalData = (count, unit, baseValue, fluctuation) => {
+  const now = new Date();
+  return Array.from({ length: count }, (_, i) => {
+    const timestamp = sub(now, { [unit]: count - 1 - i });
+    const dayFactor =
+      Math.sin((i / count) * Math.PI * 2 - Math.PI / 2) * 0.3 + 1;
+    const randomSpike = Math.random() < 0.1 ? Math.random() * 5 : 0;
+    return {
+      timestamp, // Obiekt daty
+      value: parseFloat(
+        (
+          baseValue * dayFactor +
+          Math.random() * fluctuation +
+          randomSpike
+        ).toFixed(2)
+      ),
+    };
+  });
+};
+
 export const initialHomeState = {
   notifications: [],
   thermostat: {
@@ -39,12 +61,12 @@ export const initialHomeState = {
   energy: {
     usageNow: 1.2,
     usageToday: 8.4,
-    unit: "kWh", // Zmieniamy na kWh, bo mówimy o zużyciu, nie mocy chwilowej
-    history: [], // Ta historia jest teraz mniej ważna
+    unit: "kWh",
+    history: [],
     // NOWE DANE HISTORYCZNE
-    // dailyHistory: generateHistoricalData(24, "hours", 0.5, 0.3),
-    // weeklyHistory: generateHistoricalData(7, "days", 12, 4),
-    // monthlyHistory: generateHistoricalData(30, "days", 12, 4),
+    dailyHistory: generateHistoricalData(24, "hours", 0.5, 0.3), // 24 godziny
+    weeklyHistory: generateHistoricalData(7, "days", 12, 4), // 7 dni
+    monthlyHistory: generateHistoricalData(30, "days", 12, 4), // 30 dni
   },
   environment: {
     location: "Krakow, PL",
