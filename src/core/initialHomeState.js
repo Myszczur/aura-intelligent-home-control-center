@@ -9,28 +9,28 @@ export const initialHomeState = {
   lighting: {
     livingRoom: {
       id: "livingRoom",
-      name: "Salon",
+      name: "Living Room",
       isOn: true,
       brightness: 80,
       color: "hsl(40, 100%, 75%)",
     }, // ciepły biały
     kitchen: {
       id: "kitchen",
-      name: "Kuchnia",
+      name: "Kitchen",
       isOn: true,
       brightness: 65,
       color: "hsl(200, 100%, 85%)",
     }, // chłodny biały
     bedroom: {
       id: "bedroom",
-      name: "Sypialnia",
+      name: "Bedroom",
       isOn: false,
       brightness: 100,
       color: "hsl(300, 80%, 70%)",
     }, // fioletowy
     office: {
       id: "office",
-      name: "Biuro",
+      name: "Office",
       isOn: true,
       brightness: 90,
       color: "hsl(180, 70%, 80%)",
@@ -47,7 +47,7 @@ export const initialHomeState = {
     // monthlyHistory: generateHistoricalData(30, "days", 12, 4),
   },
   environment: {
-    location: "Warszawa, PL",
+    location: "Krakow, PL",
     weather: {
       condition: "sunny", // 'sunny', 'cloudy', 'rainy', 'stormy', 'snowy'
       temperature: 19,
@@ -57,7 +57,7 @@ export const initialHomeState = {
     },
     airQuality: {
       index: 45, // Symulacja indeksu AQI
-      level: "Dobra", // 'Dobra', 'Umiarkowana', 'Zła'
+      level: "Good", // 'Dobra', 'Umiarkowana', 'Zła'
     },
     sun: {
       sunrise: "05:32",
@@ -69,25 +69,25 @@ export const initialHomeState = {
     sensors: [
       {
         id: "front_door",
-        name: "Drzwi frontowe",
+        name: "Front Door",
         isTriggered: false,
         type: "door",
       },
       {
         id: "living_room_motion",
-        name: "Ruch (Salon)",
+        name: "Motion (Living Room)",
         isTriggered: false,
         type: "motion",
       },
       {
         id: "cam_garage",
-        name: "Kamera (Garaż)",
+        name: "Camera (Garage)",
         isTriggered: false,
         type: "camera",
       },
       {
         id: "cam_garden",
-        name: "Kamera (Ogród)",
+        name: "Camera (Gardern)",
         isTriggered: false,
         type: "camera",
       },
