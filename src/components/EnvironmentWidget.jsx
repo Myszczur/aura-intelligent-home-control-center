@@ -138,7 +138,7 @@ const WeatherIcon = ({ condition }) => {
   return icons[condition] || icons.cloudy;
 };
 
-export const EnvironmentWidget = () => {
+const EnvironmentWidget = () => {
   const { homeState } = useHome();
   const { location, weather, airQuality, sun } = homeState.environment;
   const currentTime = useCurrentTime();
@@ -220,3 +220,5 @@ export const EnvironmentWidget = () => {
     </div>
   );
 };
+
+export default EnvironmentWidget;

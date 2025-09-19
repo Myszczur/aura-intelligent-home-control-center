@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { Home, Lightbulb, Shield, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
+import { path } from "motion/react-client";
 
 const menuItems = [
-  { name: "Dashboard", icon: Home },
-  { name: "Oświetlenie", icon: Lightbulb },
-  { name: "Bezpieczeństwo", icon: Shield },
-  { name: "Statystyki", icon: BarChart3 },
+  { name: "Dashboard", icon: Home, path: "/" },
+  { name: "Oświetlenie", icon: Lightbulb, path: "/lighting" },
+  { name: "Bezpieczeństwo", icon: Shield, path: "/security" },
+  { name: "Statystyki", icon: BarChart3, path: "/stats" },
 ];
 
 export const SideBar = () => {
@@ -44,18 +46,20 @@ export const SideBar = () => {
       <ul className="space-y-2">
         {menuItems.map((item, index) => (
           <motion.li key={item.name} variants={itemVariants}>
-            <a
-              href="#"
-              className={`flex items-center space-x-3 p-3 rounded-lg transition-colors
-              ${
-                index === 0
-                  ? "bg-white/10 text-whitte font-semibold"
-                  : "text-gray-400 hover:bg-white/5 hover:text-white"
-              }`}
+            <NavLink
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 
+                ${
+                  isActive
+                    ? "bg-white/10 text-white font-semibold shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]"
+                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                }`
+              }
             >
               <item.icon className="w-5 h-5" />
               <span>{item.name}</span>
-            </a>
+            </NavLink>
           </motion.li>
         ))}
       </ul>
