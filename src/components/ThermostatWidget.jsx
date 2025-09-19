@@ -134,7 +134,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useHome } from "../context/HomeEngineContext";
 import { Thermometer, Minus, Plus } from "lucide-react";
 
-export const ThermostatWidget = () => {
+const ThermostatWidget = () => {
   const { homeState, setTargetTemperature } = useHome();
 
   if (!homeState.thermostat) {
@@ -226,3 +226,5 @@ export const ThermostatWidget = () => {
     </div>
   );
 };
+
+export default ThermostatWidget;
