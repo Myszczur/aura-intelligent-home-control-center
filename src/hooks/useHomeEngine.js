@@ -7,6 +7,23 @@ import { color } from "motion";
 export const useHomeEngine = () => {
   const [homeState, setHomeState] = useState(initialHomeState);
 
+  const logSecurityEvent = (message, level = "info") => {
+    const newLogEntry = {
+      id: uuidv4(),
+      timestamp: new Date(),
+      message,
+      level,
+    };
+
+    setHomeState((prev) => ({
+      ...prev,
+      security: {
+        ...prev.security,
+        eventLog: [newLogEntry, ...prev.security.eventLog].slice(0, 10),
+      },
+    }));
+  };
+
   //główna pętla do symulacji domu
   useEffect(() => {
     const symulationInterval = setInterval(() => {
@@ -54,21 +71,37 @@ export const useHomeEngine = () => {
         }
 
         // Losowe wyzwolenie czujnika ruchu co jakiś czas
-        let newSensors = prevState.security.sensors;
-        if (Math.random() < 0.02) {
-          const sensorIndex = Math.floor(Math.random() * newSensors.length);
-          // Symulujmy, że czujnik jest aktywny przez chwilę
-          newSensors = newSensors.map((sensor, index) =>
-            index === sensorIndex
-              ? { ...sensor, isTriggered: true }
-              : { ...sensor, isTriggered: false }
+        let newSensors = prevState.security.sensors.map((s) => ({
+          ...s,
+          isTriggered: false,
+        }));
+        if (prevState.security.status !== "disarmed" && Math.random() < 0.05) {
+          const triggerableSensors = prevState.security.sensors;
+          const sensorIndex = Math.floor(
+            Math.random() * triggerableSensors.length
           );
-        } else {
-          newSensors = newSensors.map((sensor) => ({
-            ...sensor,
-            isTriggered: false,
-          }));
+          const triggeredSensor = triggerableSensors[sensorIndex];
+
+          newSensors = prevState.security.sensors.map((s, i) =>
+            i === sensorIndex ? { ...s, isTriggered: true } : s
+          );
+          logSecurityEvent(`Wykryto ruch: ${triggeredSensor.name}`, "alert");
         }
+
+        // if (Math.random() < 0.02) {
+        //   const sensorIndex = Math.floor(Math.random() * newSensors.length);
+        //   // Symulujmy, że czujnik jest aktywny przez chwilę
+        //   newSensors = newSensors.map((sensor, index) =>
+        //     index === sensorIndex
+        //       ? { ...sensor, isTriggered: true }
+        //       : { ...sensor, isTriggered: false }
+        //   );
+        // } else {
+        //   newSensors = newSensors.map((sensor) => ({
+        //     ...sensor,
+        //     isTriggered: false,
+        //   }));
+        // }
 
         // --- Symulacja zmiany pogody co jakiś czas ---
         if (Math.random() < 0.01) {
@@ -238,7 +271,7 @@ export const useHomeEngine = () => {
         }
 
         if (sceneName === "movieNight") {
-          addNotification('Scena "Wieczór Filmowy" aktywna.', "info");
+          addNotification("“Movie Night” scene is active.", "info");
         }
         if (sceneName === "goodbye") {
           addNotification(
@@ -269,12 +302,12 @@ export const useHomeEngine = () => {
   const setSecurityStatus = useCallback(
     (status) => {
       const statusMap = {
-        armed_away: "Uzbrojony (wyjście)",
-        armed_home: "Uzbrojony (w domu)",
-        disarmed: "Rozbrojony",
+        armed_away: "Uystem Armed (Away)",
+        armed_home: "System Armed (at Home)",
+        disarmed: "Disarmed",
       };
-      // logSecurityEvent(`System przełączony w tryb: ${statusMap[status]}`);
-      addNotification(`System bezpieczeństwa ${statusMap[status]}.`, "success");
+      logSecurityEvent(`System switched to mode: ${statusMap[status]}`);
+      addNotification(`Security System ${statusMap[status]}.`, "success");
 
       setHomeState((prev) => ({
         ...prev,
