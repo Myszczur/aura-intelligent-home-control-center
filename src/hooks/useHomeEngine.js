@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { initialHomeState } from "../core/initialHomeState";
 import { v4 as uuidv4 } from "uuid";
 import { color } from "motion";
@@ -57,14 +57,15 @@ export const useHomeEngine = () => {
         });
 
         // Nowe zużycie energii = bazowe zużycie + zużycie przez światła
-        const baseUsage = 0.2;
-        const lightsUsage = (brightnessSum / 100) * 0.15;
+        const baseUsage = 0.2; // kW za inne urządzenia (lodówka, etc.)
+        const lightUsage = (brightnessSum / 100) * 0.15; // Prosta symulacja
         const newEnergyUsageNow = parseFloat(
-          (baseUsage + lightsUsage + (Math.random() - 0.5) * 0.5).toFixed(2)
+          (baseUsage + lightUsage + (Math.random() - 0.5) * 0.1).toFixed(2)
         );
         const newEnergyUsageToday = parseFloat(
           (prevState.energy.usageToday + newEnergyUsageNow / 3600).toFixed(4)
-        );
+        ); // Dodawanie do dziennego zużycia
+
         const newHistory = [...prevState.energy.history, newEnergyUsageNow];
         if (newHistory.length > 30) {
           newHistory.shift();
@@ -87,21 +88,6 @@ export const useHomeEngine = () => {
           );
           logSecurityEvent(`Wykryto ruch: ${triggeredSensor.name}`, "alert");
         }
-
-        // if (Math.random() < 0.02) {
-        //   const sensorIndex = Math.floor(Math.random() * newSensors.length);
-        //   // Symulujmy, że czujnik jest aktywny przez chwilę
-        //   newSensors = newSensors.map((sensor, index) =>
-        //     index === sensorIndex
-        //       ? { ...sensor, isTriggered: true }
-        //       : { ...sensor, isTriggered: false }
-        //   );
-        // } else {
-        //   newSensors = newSensors.map((sensor) => ({
-        //     ...sensor,
-        //     isTriggered: false,
-        //   }));
-        // }
 
         // --- Symulacja zmiany pogody co jakiś czas ---
         if (Math.random() < 0.01) {
@@ -210,29 +196,32 @@ export const useHomeEngine = () => {
     });
   }, []);
 
-  const addNotification = useCallback((message, type = "info") => {
-    const newNotification = {
-      id: uuidv4(),
-      message,
-      type,
-    };
-
-    setHomeState((prevState) => ({
-      ...prevState,
-      notifications: [...prevState.notifications, newNotification],
-    }));
-
-    setTimeout(() => {
-      removeNotification(newNotification.id);
-    }, 5000);
-  }, []);
-
   const removeNotification = useCallback((id) => {
     setHomeState((prev) => ({
       ...prev,
       notifications: prev.notifications.filter((n) => n.id !== id),
     }));
   }, []);
+
+  const addNotification = useCallback(
+    (message, type = "info") => {
+      const newNotification = {
+        id: uuidv4(),
+        message,
+        type,
+      };
+
+      setHomeState((prevState) => ({
+        ...prevState,
+        notifications: [...prevState.notifications, newNotification],
+      }));
+
+      setTimeout(() => {
+        removeNotification(newNotification.id);
+      }, 5000);
+    },
+    [removeNotification]
+  );
 
   const setScene = useCallback(
     (sceneName) => {

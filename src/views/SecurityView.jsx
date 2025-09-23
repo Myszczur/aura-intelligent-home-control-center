@@ -1,27 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHome } from "../context/HomeEngineContext";
 import { Shield, ShieldOff, ShieldCheck } from "lucide-react";
 import CameraFeed from "../components/CameraFeed";
-
-const statusConfig = {
-  disarmed: {
-    label: "Disarmed",
-    icon: ShieldOff,
-    color: "text-gray-400",
-  },
-  armed_home: {
-    label: "System Armed (Home)",
-    icon: Shield,
-    color: "text-[#007BFF]",
-  },
-  armed_away: {
-    label: "System Armed (Away)",
-    icon: ShieldCheck,
-    color: "text-[#8A2BE2]",
-  },
-};
 
 function SecurityView() {
   const { homeState, setSecurityStatus } = useHome();
@@ -35,23 +16,23 @@ function SecurityView() {
       {/* Lewa kolumna: Kontrola i Dziennik Zdarzeń */}
       <div className="lg:col-span-1 space-y-8">
         {/* Panel Kontrolny */}
-        <div className="bg-dark-card p-6 rounded-2xl shadow-tactile border border-white/5">
+        <div className="bg-dark-card p-6 rounded-2xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)\,_inset_0_1px_0_0_rgba(255,255,255,0.05)] border border-white/5">
           <h2 className="text-xl font-bold text-white mb-4">System Status</h2>
           <div className="grid grid-cols-3 gap-3">
             <SecurityButton
-              label="Rozbrój"
+              label="Disarmed"
               icon={ShieldOff}
               isActive={status === "disarmed"}
               onClick={() => setSecurityStatus("disarmed")}
             />
             <SecurityButton
-              label="W domu"
+              label="System Armed (Home)"
               icon={Shield}
               isActive={status === "armed_home"}
               onClick={() => setSecurityStatus("armed_home")}
             />
             <SecurityButton
-              label="Wyjście"
+              label="System Armed (Away)"
               icon={ShieldCheck}
               isActive={status === "armed_away"}
               onClick={() => setSecurityStatus("armed_away")}
@@ -60,7 +41,7 @@ function SecurityView() {
         </div>
 
         {/* Dziennik Zdarzeń */}
-        <div className="bg-dark-card p-6 rounded-2xl shadow-tactile border border-white/5">
+        <div className="bg-dark-card p-6 rounded-2xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)\,_inset_0_1px_0_0_rgba(255,255,255,0.05)] border border-white/5">
           <h2 className="text-xl font-bold text-white mb-4">Event Log</h2>
           <div className="space-y-3 h-96 overflow-y-auto pr-2 -mr-2">
             <AnimatePresence>
