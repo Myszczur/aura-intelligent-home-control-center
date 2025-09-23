@@ -10,9 +10,16 @@ const ActionButton = ({
   onClick,
   colorClass = "bg-[#007BFF]",
 }) => {
+  const { playSound } = useHome();
+
+  const handleClick = () => {
+    playSound("click");
+    if (onClick) onClick();
+  };
+
   return (
     <motion.button
-      onClick={onClick}
+      onClick={handleClick}
       className="p-4 rounded-2xl flex flex-col items-center justify-center space-y-2 aspect-square
         bg-gradient-to-br from-[#2c2c2c] to-[#252525]
         border border-white/5 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)\,_inset_0_1px_0_0_rgba(255,255,255,0.05)] relative overflow-hidden"
@@ -48,15 +55,10 @@ function QuickActionsWidget() {
   const anyLightOn = Object.values(homeState.lighting).some(
     (light) => light.isOn
   );
-  // const allLightsOn = Object.values(homeState.lighting).every(
-  //   (light) => light.isOn
-  // );
 
   const handleLightsToggle = () => {
     setAllLights(!anyLightOn);
   };
-
-  // const isLivingRoomOn = homeState.lighting.livingRoom.isOn;
 
   return (
     <div className="flex flex-col h-full">
