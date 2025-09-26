@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useHome } from "../context/HomeEngineContext";
 import { CheckCircle, Info, XCircle, AlertTriangle, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const notificationConfig = {
   success: { icon: CheckCircle, color: "text-green-400" },
@@ -39,8 +40,17 @@ const Notification = ({ notification, onRemove }) => {
 };
 
 function NotificationManager() {
-  const { homeState, removeNotification } = useHome();
+  const { homeState, removeNotification, playSound } = useHome();
   const { notifications } = homeState;
+
+  const prevNotificationCount = useRef(notifications.length);
+
+  useEffect(() => {
+    if (notifications.length > prevNotificationCount.current) {
+      playSound("notification");
+    }
+    prevNotificationCount.current = notifications.length;
+  }, [notifications, playSound]);
 
   return (
     // Pozycjonowanie kontenera w prawym górnym rogu

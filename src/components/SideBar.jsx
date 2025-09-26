@@ -1,8 +1,16 @@
 /* eslint-disable no-unused-vars */
-import { Home, Lightbulb, Shield, BarChart3 } from "lucide-react";
+import {
+  Home,
+  Lightbulb,
+  Shield,
+  BarChart3,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { path } from "motion/react-client";
+import { useHome } from "../context/HomeEngineContext";
 
 const menuItems = [
   { name: "Dashboard", icon: Home, path: "/" },
@@ -12,6 +20,8 @@ const menuItems = [
 ];
 
 export const SideBar = () => {
+  const { areSoundsEnabled, toggleSounds } = useHome();
+
   // Warianty animacji dla Framer
   const sidebarVariants = {
     hidden: { x: "-100%", opacity: 0 },
@@ -63,6 +73,9 @@ export const SideBar = () => {
           </motion.li>
         ))}
       </ul>
+      <button onClick={toggleSounds}>
+        {areSoundsEnabled ? <Volume2 /> : <VolumeX />}
+      </button>
     </motion.div>
   );
 };
