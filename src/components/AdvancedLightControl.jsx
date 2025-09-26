@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Power } from "lucide-react";
+import { Power } from "lucide-react";
 
 function AdvancedLightControl({
   light,

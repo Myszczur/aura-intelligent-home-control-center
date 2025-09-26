@@ -48,26 +48,26 @@ function QuickActionsWidget() {
   const anyLightOn = Object.values(homeState.lighting).some(
     (light) => light.isOn
   );
-  const allLightsOn = Object.values(homeState.lighting).every(
-    (light) => light.isOn
-  );
+  // const allLightsOn = Object.values(homeState.lighting).every(
+  //   (light) => light.isOn
+  // );
 
   const handleLightsToggle = () => {
     setAllLights(!anyLightOn);
   };
 
-  const isLivingRoomOn = homeState.lighting.livingRoom.isOn;
+  // const isLivingRoomOn = homeState.lighting.livingRoom.isOn;
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-start p-6 pb-2">
-        <h3 className="font-bold text-white">Szybkie Akcje</h3>
+        <h3 className="font-bold text-white">Quick actions</h3>
         <Zap className="text-gray-500" />
       </div>
       <div className="grid grid-cols-2 gap-4 p-6 pt-2">
         <ActionButton
           icon={anyLightOn ? Moon : Sun}
-          label={anyLightOn ? "Wyłącz światła" : "Włącz światła"}
+          label={anyLightOn ? "Turn Off lights" : "Turn On lights"}
           isActive={anyLightOn}
           onClick={handleLightsToggle}
           colorClass="bg-yellow-500"

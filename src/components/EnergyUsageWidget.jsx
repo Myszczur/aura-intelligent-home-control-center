@@ -4,7 +4,8 @@ import { useHome } from "../context/HomeEngineContext";
 import { Zap } from "lucide-react";
 
 const generateChartPath = (data, width, height) => {
-  const max = Math.max(...data);
+  if (data.length === 0) return "M 0 0";
+  const max = Math.max(...data, 1);
 
   let path = `M 0 ${height - (data[0] / max) * height}`;
 
@@ -24,6 +25,7 @@ function EnergyUsageWidget() {
 
   const chartWidth = 300;
   const chartHeight = 80;
+
   const pathData = generateChartPath(history, chartWidth, chartHeight);
   const areaData = `${pathData} L ${chartWidth} ${chartHeight} L 0 ${chartHeight} Z`;
 
@@ -31,8 +33,8 @@ function EnergyUsageWidget() {
     <div className="bg-gradient-to-br from-[#2c2c2c] to-[#252525] p-6 rounded-2xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3),_inset_0_1px_0_0_rgba(255,255,255,0.05)] border border-white/5 flex flex-col lg:col-span-2">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="font-bold text-white">Zużycie Energii</h3>
-          <p className="text-sm text-gray-400">Na żywo</p>
+          <h3 className="font-bold text-white">Energy usage</h3>
+          <p className="text-sm text-gray-400">On Live</p>
         </div>
         <Zap className="text-gray-500" />
       </div>
@@ -41,13 +43,13 @@ function EnergyUsageWidget() {
       <div className="flex items-end space-x-6 mb-4">
         <div>
           <p className="text-4xl font-light tet-white">{usageNow.toFixed(2)}</p>
-          <p className="text-sm text-[#8A2BE2]">{unit} teraz</p>
+          <p className="text-sm text-[#8A2BE2]">{unit} now</p>
         </div>
         <div>
           <p className="text-2xl font-light text-gray-300">
             {usageToday.toFixed(2)}
           </p>
-          <p className="text-sm text-gray-500">kwh dzisiaj</p>
+          <p className="text-sm text-gray-500">kwh today</p>
         </div>
       </div>
 

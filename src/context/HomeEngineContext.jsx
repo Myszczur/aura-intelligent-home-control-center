@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { useHomeEngine } from "../hooks/useHomeEngine";
 
 // 1. Tworzymy kontekst

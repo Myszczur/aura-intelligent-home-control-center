@@ -1,6 +1,5 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
 import { motion, AnimatePresence } from "framer-motion";
-import { Video, VideoOff } from "lucide-react";
 
 function CameraFeed({ camera }) {
   return (
