@@ -44,9 +44,8 @@ export const useHomeEngine = () => {
         const currentHour = now.getHours();
 
         // --- LOGIKA GENEROWANIA SUGESTII (uruchamiana co 10 sekund) ---
+        let newSuggestion = null;
         if (Math.random() < 0.01) {
-          let newSuggestion = null;
-
           // 1. Sugestia poranna
           if (
             currentHour >= 6 &&
@@ -73,7 +72,7 @@ export const useHomeEngine = () => {
             };
           }
           // 3. Sugestia oszczędzania energii
-          else if (newState.energy.usageNow > 2.0) {
+          else if (newState.energy.usageNow > 0.7) {
             // Duże zużycie
             newSuggestion = {
               icon: "TrendingDown",
@@ -82,15 +81,15 @@ export const useHomeEngine = () => {
               actionType: null,
             };
           }
+        }
 
-          // Jeśli nowa sugestia jest inna niż obecna, zaktualizuj stan
-          if (
-            newSuggestion &&
-            (!newState.suggestion ||
-              newState.suggestion.message !== newSuggestion.message)
-          ) {
-            newState.suggestion = { ...newSuggestion, id: uuidv4() };
-          }
+        let finalSuggestion = prevState.suggestion;
+        if (
+          newSuggestion &&
+          (!prevState.suggestion ||
+            prevState.suggestion.message !== newSuggestion.message)
+        ) {
+          finalSuggestion = { ...newSuggestion, id: uuidv4() };
         }
 
         // termostat
@@ -220,6 +219,7 @@ export const useHomeEngine = () => {
             ...prevState.security,
             sensors: newSensors,
           },
+          suggestion: finalSuggestion,
           newState,
         };
       });
