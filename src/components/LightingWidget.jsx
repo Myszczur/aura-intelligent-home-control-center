@@ -5,6 +5,12 @@ import { Lightbulb, Sun } from "lucide-react";
 
 const LightItem = ({ light, onToggle, onBrightnessChange }) => {
   const { name, isOn, brightness } = light;
+  const { playSound } = useHome();
+
+  const handleToggleWithSound = () => {
+    onToggle();
+    playSound("toggle");
+  };
 
   return (
     <motion.div
@@ -20,7 +26,7 @@ const LightItem = ({ light, onToggle, onBrightnessChange }) => {
           className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
             isOn ? "bg-[#007BFF] justify-end" : "bg-gray-600 justify-start"
           }`}
-          onClick={onToggle}
+          onClick={handleToggleWithSound}
         >
           <motion.div
             layout
