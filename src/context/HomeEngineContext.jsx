@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useHomeEngine } from "../hooks/useHomeEngine";
 import { useSound } from "../hooks/useSound";
+import { sounds as soundMap } from "../hooks/useSound";
 
 // 1. Tworzymy kontekst
 const HomeEngineContext = createContext(null);
@@ -12,6 +13,14 @@ export const HomeEngineProvider = ({ children }) => {
   const engine = useHomeEngine(); // Używamy naszego hooka
 
   const contextValue = { ...engine, ...sound };
+
+  useEffect(() => {
+    console.log("Preloading UI sounds...");
+    Object.values(soundMap).forEach((soundUrl) => {
+      const audio = new Audio(soundUrl);
+      audio.load();
+    });
+  }, []);
 
   return (
     <HomeEngineContext.Provider value={contextValue}>

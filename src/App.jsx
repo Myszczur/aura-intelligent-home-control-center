@@ -1,19 +1,33 @@
+/* eslint-disable no-unused-vars */
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { preloadAllSounds } from "./hooks/useSound";
 
 // Komponenty główne
 import SideBar from "./components/SideBar";
 import NotificationManager from "./components/NotificationManager";
+import Loader from "./components/Loader";
 
 // Widoki (Views)
-import DashboardView from "./views/DashboardView";
-import LightingView from "./views/LightingView";
-import SecurityView from "./views/SecurityView";
-import StatsView from "./views/StatsView";
+const DashboardView = lazy(() => import("./views/DashboardView"));
+const LightingView = lazy(() => import("./views/LightingView"));
+const SecurityView = lazy(() => import("./views/SecurityView"));
+const StatsView = lazy(() => import("./views/StatsView"));
+
+// import DashboardView from "./views/DashboardView";
+// import LightingView from "./views/LightingView";
+// import SecurityView from "./views/SecurityView";
+// import StatsView from "./views/StatsView";
+import { useEffect } from "react";
 
 // ---- Główny Komponent Aplikacji ----
 function App() {
   const location = useLocation();
+
+  useEffect(() => {
+    preloadAllSounds();
+  }, []);
 
   const pageVariants = {
     initial: {
@@ -63,12 +77,14 @@ function App() {
               transition={pageTransition}
               className="absolute w-full"
             >
-              <Routes location={location}>
-                <Route path="/" element={<DashboardView />} />
-                <Route path="/lighting" element={<LightingView />} />
-                <Route path="/security" element={<SecurityView />} />
-                <Route path="/stats" element={<StatsView />} />
-              </Routes>
+              <Suspense fallback={<Loader />}>
+                <Routes location={location}>
+                  <Route path="/" element={<DashboardView />} />
+                  <Route path="/lighting" element={<LightingView />} />
+                  <Route path="/security" element={<SecurityView />} />
+                  <Route path="/stats" element={<StatsView />} />
+                </Routes>
+              </Suspense>
             </motion.div>
           </AnimatePresence>
         </div>
