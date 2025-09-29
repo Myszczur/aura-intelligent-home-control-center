@@ -7,6 +7,17 @@ import { color } from "motion";
 export const useHomeEngine = () => {
   const [homeState, setHomeState] = useState(initialHomeState);
 
+  const setSuggestion = (suggestion) => {
+    setHomeState((prev) => ({
+      ...prev,
+      suggestion: suggestion ? { ...suggestion, id: uuidv4() } : null,
+    }));
+  };
+
+  const dismissSuggestion = () => {
+    setHomeState((prevStatus) => ({ ...prevStatus, suggestion: null }));
+  };
+
   const logSecurityEvent = (message, level = "info") => {
     const newLogEntry = {
       id: uuidv4(),
@@ -28,7 +39,59 @@ export const useHomeEngine = () => {
   useEffect(() => {
     const symulationInterval = setInterval(() => {
       setHomeState((prevState) => {
-        let newState = { ...prevState };
+        const newState = { ...prevState };
+        const now = new Date();
+        const currentHour = now.getHours();
+
+        // --- LOGIKA GENEROWANIA SUGESTII (uruchamiana co 10 sekund) ---
+        if (Math.random() < 0.01) {
+          let newSuggestion = null;
+
+          // 1. Sugestia poranna
+          if (
+            currentHour >= 6 &&
+            currentHour < 9 &&
+            newState.security.status !== "disarmed"
+          ) {
+            newSuggestion = {
+              icon: "Sunrise",
+              message: "Dzień dobry! Czas rozpocząć dzień.",
+              actionType: "SET_SECURITY_STATUS",
+              actionPayload: "disarmed",
+            };
+          } // 2. Sugestia wieczornego relaksu
+          else if (
+            currentHour >= 20 &&
+            newState.lighting.livingRoom.isOn &&
+            newState.lighting.livingRoom.brightness > 50
+          ) {
+            newSuggestion = {
+              icon: "Film",
+              message: "Może czas na wieczorny relaks przy filmie?",
+              actionType: "SET_SCENE",
+              actionPayload: "movieNight",
+            };
+          }
+          // 3. Sugestia oszczędzania energii
+          else if (newState.energy.usageNow > 2.0) {
+            // Duże zużycie
+            newSuggestion = {
+              icon: "TrendingDown",
+              message:
+                "Wysokie zużycie energii. Upewnij się, że wszystko, co zbędne, jest wyłączone.",
+              actionType: null,
+            };
+          }
+
+          // Jeśli nowa sugestia jest inna niż obecna, zaktualizuj stan
+          if (
+            newSuggestion &&
+            (!newState.suggestion ||
+              newState.suggestion.message !== newSuggestion.message)
+          ) {
+            newState.suggestion = { ...newSuggestion, id: uuidv4() };
+          }
+        }
 
         // termostat
         const tempDiff =
@@ -326,5 +389,6 @@ export const useHomeEngine = () => {
     setScene,
     removeNotification,
     setLightColor,
+    dismissSuggestion,
   };
 };
