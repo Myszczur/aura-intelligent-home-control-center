@@ -20,7 +20,7 @@ const menuItems = [
 ];
 
 export const SideBar = () => {
-  const { areSoundsEnabled, toggleSounds } = useHome();
+  const { areSoundsEnabled, toggleSounds, playSound } = useHome();
 
   // Warianty animacji dla Framer
   const sidebarVariants = {
@@ -41,6 +41,10 @@ export const SideBar = () => {
     visible: { x: 0, opacity: 1 },
   };
 
+  const handleMouseEnter = () => {
+    playSound("hover", { isHover: true });
+  };
+
   return (
     <motion.div
       className="w-64 h-screen p-4 flex flex-col bh-black/20 border-r border-white/5 shadow-2xl"
@@ -55,7 +59,11 @@ export const SideBar = () => {
 
       <ul className="space-y-2">
         {menuItems.map((item, index) => (
-          <motion.li key={item.name} variants={itemVariants}>
+          <motion.li
+            key={item.name}
+            variants={itemVariants}
+            onMouseEnter={handleMouseEnter}
+          >
             <NavLink
               to={item.path}
               className={({ isActive }) =>
