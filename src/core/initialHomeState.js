@@ -115,5 +115,6 @@ export const initialHomeState = {
       },
     ],
     eventLog: [],
+    suggestion: null,
   },
 };
