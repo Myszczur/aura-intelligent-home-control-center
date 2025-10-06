@@ -15,10 +15,6 @@ const LightingView = lazy(() => import("./views/LightingView"));
 const SecurityView = lazy(() => import("./views/SecurityView"));
 const StatsView = lazy(() => import("./views/StatsView"));
 
-// import DashboardView from "./views/DashboardView";
-// import LightingView from "./views/LightingView";
-// import SecurityView from "./views/SecurityView";
-// import StatsView from "./views/StatsView";
 import { useEffect } from "react";
 
 // ---- Główny Komponent Aplikacji ----
